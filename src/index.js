@@ -8,18 +8,21 @@ document.addEventListener('DOMContentLoaded', () => {
   .then( response => response.json())
   .then(json => renderQuotes(json))
 
+  function addNewQuote(quote) {
+    quoteCon.innerHTML += `<li class='quote-card' id="${quote.id}">
+    <blockquote class="blockquote">
+    <p class="mb-0">${quote.quote}</p>
+    <footer class="blockquote-footer">${quote.author}</footer>
+    <br>
+    <button class='btn-success'>Likes: <span>${quote.likes}</span></button>
+    <button class='btn-danger'>Delete</button>
+    </blockquote>
+    </li>`
+  }
 
   function renderQuotes(quotesList) {
     quotesList.forEach( quote => {
-      quoteCon.innerHTML += `<li class='quote-card' id="${quote.id}">
-      <blockquote class="blockquote">
-      <p class="mb-0">${quote.quote}</p>
-      <footer class="blockquote-footer">${quote.author}</footer>
-      <br>
-      <button class='btn-success'>Likes: <span>${quote.likes}</span></button>
-      <button class='btn-danger'>Delete</button>
-      </blockquote>
-      </li>`
+      addNewQuote(quote)
     })
   }
 
@@ -31,45 +34,26 @@ document.addEventListener('DOMContentLoaded', () => {
     let quote = event.target[0]
     let author = event.target[1]
 
-    quoteCon.innerHTML += `<li class='quote-card' id="${quote.id}">
-    <blockquote class="blockquote">
-    <p class="mb-0">${quote.value}</p>
-    <footer class="blockquote-footer">${author.value}</footer>
-    <br>
-    <button class='btn-success'>Likes: <span>0</span></button>
-    <button class='btn-danger'>Delete</button>
-    </blockquote>
-    </li>`
-
     postQuote(event)
+    .then(response => response.json())
+    .then( quote => {
+      addNewQuote(quote)
+    })
+
+    event.target.reset()
   })
 
   function postQuote(event) {
-    fetch('http://localhost:3000/quotes', {
+    return fetch('http://localhost:3000/quotes', {
       method: "POST",
       headers: {
           "Content-Type": "application/json; charset=utf-8",
       },
       body: JSON.stringify({
         quote: event.target[0].value,
+        likes: 0,
         author: event.target[1].value
       })
-    })
-    event.target.reset()
-  }
-
-  quoteCon.addEventListener('click', function(event) {
-    // debugger
-    if (event.target.className === "btn-danger") {
-      event.target.parentElement.parentElement.remove()
-
-      deleteQuote(parseInt(event.target.parentElement.parentElement.id), 'http://localhost:3000/quotes')
-    }
-  })
-
-  function deleteQuote(item, url) {
-    fetch(url + '/' + item, {
-      method: "DELETE"
     })
   }
 
@@ -80,6 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
       // console.log("hi")
 
       updateLike(parseInt(event.target.parentElement.parentElement.id), 'http://localhost:3000/quotes')
+    } else if (event.target.className === "btn-danger") {
+      event.target.parentElement.parentElement.remove()
+
+      deleteQuote(parseInt(event.target.parentElement.parentElement.id), 'http://localhost:3000/quotes')
     }
   })
 
@@ -92,6 +80,12 @@ document.addEventListener('DOMContentLoaded', () => {
       body: JSON.stringify({
         likes: Number(event.target.firstElementChild.innerHTML)
       })
+    })
+  }
+
+  function deleteQuote(item, url) {
+    fetch(url + '/' + item, {
+      method: "DELETE"
     })
   }
 

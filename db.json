@@ -3,7 +3,7 @@
     {
       "id": 1,
       "quote": "Don't count the days, make the days count.",
-      "likes": 1,
+      "likes": 3,
       "author": "Mike Tyson"
     },
     {
@@ -29,6 +29,18 @@
       "quote": "Success is not final, failure is not fatal: it is the courage to continue that counts.",
       "likes": 3,
       "author": "Winston Churchhill"
+    },
+    {
+      "quote": "Do not go gentle into that good night ",
+      "likes": 1,
+      "author": "Dylan Thomas",
+      "id": 6
+    },
+    {
+      "quote": "BBHMM",
+      "likes": 0,
+      "author": "Rihanna",
+      "id": 7
     }
   ]
 }
